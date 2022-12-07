@@ -18,15 +18,19 @@ func marshalStatusMapToJSONList(sm map[string]*pb.SFUStatus) []byte {
 	return sb
 }
 
-type Server struct {
+type Service struct {
 	VisualizedAlgorithm
 }
 
-func (s Server) GetStatusListJSON() []byte {
+func NewService(algorithm pb.ProtobufAlgorithm) Service {
+	return Service{Visualize(algorithm)}
+}
+
+func (s Service) GetStatusListJSON() []byte {
 	return marshalStatusMapToJSONList(s.GetStatusMap())
 }
 
-func (s Server) FetchStatusListJSON() []byte {
+func (s Service) FetchStatusListJSON() []byte {
 	return marshalStatusMapToJSONList(s.FetchStatusMap())
 }
 
@@ -43,6 +47,6 @@ func marshalReportListToJSONList(lr []*pb.QualityReport) []byte {
 	return sb
 }
 
-func (s Server) FetchReportListJSON() []byte {
+func (s Service) FetchReportListJSON() []byte {
 	return marshalReportListToJSONList(s.FetchReportList())
 }

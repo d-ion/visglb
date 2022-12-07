@@ -10,6 +10,15 @@ type VisualizedAlgorithm struct {
 	reportEvent   chan []*pb.QualityReport
 }
 
+func Visualize(algorithm pb.ProtobufAlgorithm) VisualizedAlgorithm {
+	return VisualizedAlgorithm{
+		ProtobufAlgorithm: algorithm,
+		lastStatusMap:     make(map[string]*pb.SFUStatus),
+		statusEvent:       make(chan map[string]*pb.SFUStatus, 1),
+		reportEvent:       make(chan []*pb.QualityReport, 1),
+	}
+}
+
 func (a VisualizedAlgorithm) UpdateSFUStatus(current []*pb.SFUStatus, reports []*pb.QualityReport) (expected []*pb.SFUStatus) {
 	statusMap := make(map[string]*pb.SFUStatus)
 	for _, s := range current {
