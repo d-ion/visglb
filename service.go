@@ -6,6 +6,9 @@ import (
 )
 
 func marshalStatusMapToJSONList(sm map[string]*pb.SFUStatus) []byte {
+	if len(sm) <= 0 {
+		return []byte{'[', ']'}
+	}
 	sb := make([]byte, 0)
 	sb = append(sb, '[')
 	for _, status := range sm {
@@ -35,6 +38,9 @@ func (s Service) FetchStatusListJSON() []byte {
 }
 
 func marshalReportListToJSONList(lr []*pb.QualityReport) []byte {
+	if len(lr) <= 0 {
+		return []byte{'[', ']'}
+	}
 	sb := make([]byte, 0)
 	sb = append(sb, '[')
 	for _, status := range lr {
