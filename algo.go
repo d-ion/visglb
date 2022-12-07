@@ -2,10 +2,6 @@ package visglb
 
 import pb "github.com/d-ion/isglb/proto"
 
-type ProtobufAlgorithm interface {
-	UpdateSFUStatus(current []*pb.SFUStatus, reports []*pb.QualityReport) (expected []*pb.SFUStatus)
-}
-
 type VisualizedAlgorithm struct {
 	pb.ProtobufAlgorithm
 
@@ -50,14 +46,14 @@ func (a VisualizedAlgorithm) GetStatusMap() map[string]*pb.SFUStatus {
 	return a.lastStatusMap
 }
 
-// FetchStatusUpdate fetch the status update and get the latest status
+// FetchStatusMap fetch the status map and get the latest status
 // TODO: implement pubsub and implement fetch for multi user
-func (a VisualizedAlgorithm) FetchStatusUpdate() map[string]*pb.SFUStatus {
+func (a VisualizedAlgorithm) FetchStatusMap() map[string]*pb.SFUStatus {
 	return <-a.statusEvent
 }
 
-// FetchReport fetch the reports
+// FetchReportList fetch the report list
 // TODO: implement pubsub and implement fetch for multi user
-func (a VisualizedAlgorithm) FetchReport() []*pb.QualityReport {
+func (a VisualizedAlgorithm) FetchReportList() []*pb.QualityReport {
 	return <-a.reportEvent
 }
