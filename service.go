@@ -6,18 +6,18 @@ import (
 )
 
 func marshalStatusMapToJSONList(sm map[string]*pb.SFUStatus) []byte {
-	if len(sm) <= 0 {
-		return []byte{'[', ']'}
-	}
-	sb := make([]byte, 0)
-	sb = append(sb, '[')
+	sb := []byte{'['}
 	for _, status := range sm {
 		if b, err := protojson.Marshal(status); err == nil {
 			sb = append(sb, b...)
+			sb = append(sb, ',')
 		}
-		sb = append(sb, ',')
 	}
-	sb[len(sb)-1] = ']'
+	if len(sb) <= 1 {
+		sb = append(sb, ']')
+	} else {
+		sb[len(sb)-1] = ']'
+	}
 	return sb
 }
 
@@ -38,18 +38,18 @@ func (s Service) FetchStatusListJSON() []byte {
 }
 
 func marshalReportListToJSONList(lr []*pb.QualityReport) []byte {
-	if len(lr) <= 0 {
-		return []byte{'[', ']'}
-	}
-	sb := make([]byte, 0)
-	sb = append(sb, '[')
-	for _, status := range lr {
-		if b, err := protojson.Marshal(status); err == nil {
+	sb := []byte{'['}
+	for _, report := range lr {
+		if b, err := protojson.Marshal(report); err == nil {
 			sb = append(sb, b...)
+			sb = append(sb, ',')
 		}
-		sb = append(sb, ',')
 	}
-	sb[len(sb)-1] = ']'
+	if len(sb) <= 1 {
+		sb = append(sb, ']')
+	} else {
+		sb[len(sb)-1] = ']'
+	}
 	return sb
 }
 
