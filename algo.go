@@ -10,8 +10,8 @@ type VisualizedAlgorithm struct {
 	reportEvent   chan []*pb.QualityReport
 }
 
-func Visualize(algorithm pb.ProtobufAlgorithm) VisualizedAlgorithm {
-	return VisualizedAlgorithm{
+func Visualize(algorithm pb.ProtobufAlgorithm) *VisualizedAlgorithm {
+	return &VisualizedAlgorithm{
 		ProtobufAlgorithm: algorithm,
 		lastStatusMap:     make(map[string]*pb.SFUStatus),
 		statusEvent:       make(chan map[string]*pb.SFUStatus, 1),
@@ -19,7 +19,7 @@ func Visualize(algorithm pb.ProtobufAlgorithm) VisualizedAlgorithm {
 	}
 }
 
-func (a VisualizedAlgorithm) UpdateSFUStatus(current []*pb.SFUStatus, reports []*pb.QualityReport) (expected []*pb.SFUStatus) {
+func (a *VisualizedAlgorithm) UpdateSFUStatus(current []*pb.SFUStatus, reports []*pb.QualityReport) (expected []*pb.SFUStatus) {
 	statusMap := make(map[string]*pb.SFUStatus)
 	for _, s := range current {
 		statusMap[s.SFU.Id] = s // save new status
@@ -47,22 +47,32 @@ func (a VisualizedAlgorithm) UpdateSFUStatus(current []*pb.SFUStatus, reports []
 		default:
 		}
 	}
+	if len(reports) > 0 { // non-block
+		select {
+		case <-a.reportEvent:
+		default:
+		}
+		select {
+		case a.reportEvent <- reports:
+		default:
+		}
+	}
 	return expected
 }
 
 // GetStatusMap get the current status map
-func (a VisualizedAlgorithm) GetStatusMap() map[string]*pb.SFUStatus {
+func (a *VisualizedAlgorithm) GetStatusMap() map[string]*pb.SFUStatus {
 	return a.lastStatusMap
 }
 
 // FetchStatusMap fetch the status map and get the latest status
 // TODO: implement pubsub and implement fetch for multi user
-func (a VisualizedAlgorithm) FetchStatusMap() map[string]*pb.SFUStatus {
+func (a *VisualizedAlgorithm) FetchStatusMap() map[string]*pb.SFUStatus {
 	return <-a.statusEvent
 }
 
 // FetchReportList fetch the report list
 // TODO: implement pubsub and implement fetch for multi user
-func (a VisualizedAlgorithm) FetchReportList() []*pb.QualityReport {
+func (a *VisualizedAlgorithm) FetchReportList() []*pb.QualityReport {
 	return <-a.reportEvent
 }

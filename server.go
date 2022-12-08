@@ -1,7 +1,6 @@
 package visglb
 
 import (
-	pb "github.com/d-ion/isglb/proto"
 	"net/http"
 )
 
@@ -9,7 +8,7 @@ type Server struct {
 	Service
 }
 
-func NewServer(algorithm pb.ProtobufAlgorithm) Server {
+func NewServer(algorithm *VisualizedAlgorithm) Server {
 	return Server{NewService(algorithm)}
 }
 

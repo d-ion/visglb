@@ -22,11 +22,11 @@ func marshalStatusMapToJSONList(sm map[string]*pb.SFUStatus) []byte {
 }
 
 type Service struct {
-	VisualizedAlgorithm
+	*VisualizedAlgorithm
 }
 
-func NewService(algorithm pb.ProtobufAlgorithm) Service {
-	return Service{Visualize(algorithm)}
+func NewService(algorithm *VisualizedAlgorithm) Service {
+	return Service{VisualizedAlgorithm: algorithm}
 }
 
 func (s Service) GetStatusListJSON() []byte {
